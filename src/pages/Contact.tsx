@@ -1,7 +1,8 @@
 import { motion } from 'framer-motion';
 import { Github, Linkedin, Twitter, Mail, MapPin, Phone } from 'lucide-react';
 import Section from '../components/ui/Section';
-import ContactForm from '../components/ui/ContactForm';
+import React from 'react';
+import { useForm, ValidationError } from '@formspree/react';
 
 const Contact = () => {
   return (
@@ -175,5 +176,53 @@ const FaqItem = ({ question, answer, delay }: FaqItemProps) => (
     </p>
   </motion.div>
 );
+
+function ContactForm() {
+  const [state, handleSubmit] = useForm("xbloybab");
+  if (state.succeeded) {
+      return <p className="text-green-500 text-lg font-semibold">Thanks for reaching out!</p>;
+  }
+  return (
+    <form onSubmit={handleSubmit} className="bg-night-900 border border-night-800 rounded-xl p-8 shadow-lg flex flex-col gap-6">
+      <div className="flex flex-col gap-2">
+        <label htmlFor="email" className="text-night-200 font-medium">Email Address</label>
+        <input
+          id="email"
+          type="email"
+          name="email"
+          placeholder="you@example.com"
+          className="px-4 py-3 rounded-lg bg-night-800 border border-night-700 text-white focus:outline-none focus:ring-2 focus:ring-primary-600 transition-all"
+        />
+        <ValidationError
+          prefix="Email"
+          field="email"
+          errors={state.errors}
+        />
+      </div>
+      <div className="flex flex-col gap-2">
+        <label htmlFor="message" className="text-night-200 font-medium">Message</label>
+        <textarea
+          id="message"
+          name="message"
+          placeholder="Type your message here..."
+          rows={6}
+          className="px-4 py-3 rounded-lg bg-night-800 border border-night-700 text-white focus:outline-none focus:ring-2 focus:ring-primary-600 transition-all resize-none"
+        />
+        <ValidationError
+          prefix="Message"
+          field="message"
+          errors={state.errors}
+        />
+      </div>
+      <button
+        type="submit"
+        disabled={state.submitting}
+        className="mt-2 bg-primary-600 hover:bg-primary-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors disabled:opacity-60 disabled:cursor-not-allowed shadow-md"
+      >
+        {state.submitting ? 'Sending...' : 'Submit'}
+      </button>
+    </form>
+  );
+}
 
 export default Contact;
